@@ -55,14 +55,15 @@ async function getDepartments(apiToken) {
  * @returns object.
  */
 const changeId = (obj, property = "id") => {
-	const updatedObj = obj
-	updatedObj[property] = updatedObj[property].toString()
-	return updatedObj
+  const updatedObj = obj
+  updatedObj[property] = updatedObj[property].toString()
+  return updatedObj
 }
 
 const defaultPluginOptions = {
   jobPosts: {
-    live: true
+    live: true,
+    per_page: 500
   }
 }
 
@@ -114,7 +115,7 @@ function flattenJobPosts(jobs, jobPosts) {
 }
 
 exports.sourceNodes = async ({ boundActionCreators }, { apiToken, pluginOptions }) => {
-	const { createNode } = boundActionCreators
+  const { createNode } = boundActionCreators
   const options = pluginOptions || defaultPluginOptions
 
   console.log(`Fetch Greenhouse data`)
@@ -125,15 +126,15 @@ exports.sourceNodes = async ({ boundActionCreators }, { apiToken, pluginOptions 
   try {
     departments = await getDepartments(apiToken).then(response => response.data)
     jobPosts = await getJobPosts(apiToken, options.jobPosts).then(response => response.data)
-    
+
   } catch (e) {
     console.log(`Failed to fetch data from Greenhouse`)
     process.exit(1)
   }
 
   const convertedJobPosts = jobPosts.map((jobPost) => {
-      const convertedJobPost = changeId(jobPost)
-      return changeId(convertedJobPost, "job_id")
+    const convertedJobPost = changeId(jobPost)
+    return changeId(convertedJobPost, "job_id")
   })
 
   console.log(`jobPosts fetched`, jobPosts.length)
@@ -141,7 +142,7 @@ exports.sourceNodes = async ({ boundActionCreators }, { apiToken, pluginOptions 
   return Promise.all(
     departments.map(async department => {
       const convertedDepartment = changeId(department)
-      
+
       let jobs
       try {
         const jobsForDepartmentResults = await getJobsForDepartment(apiToken, convertedDepartment.id)
@@ -152,16 +153,16 @@ exports.sourceNodes = async ({ boundActionCreators }, { apiToken, pluginOptions 
         process.exit(1)
       }
 
-      convertedDepartment.jobPosts =  flattenJobPosts(jobs, convertedJobPosts)
+      convertedDepartment.jobPosts = flattenJobPosts(jobs, convertedJobPosts)
       const departmentNode = DepartmentNode(changeId(convertedDepartment))
 
       convertedDepartment.jobPosts.forEach(jobPost => {
-        const jobPostNode = JobPostNode(jobPost, { 
-          parent: departmentNode.id 
+        const jobPostNode = JobPostNode(jobPost, {
+          parent: departmentNode.id
         })
         createNode(jobPostNode)
       })
-      
+
       createNode(departmentNode)
     })
   )
