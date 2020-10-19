@@ -62,8 +62,7 @@ const changeId = (obj, property = "id") => {
 
 const defaultPluginOptions = {
   jobPosts: {
-    live: true,
-    per_page: 500
+    live: true
   }
 }
 
