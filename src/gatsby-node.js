@@ -27,7 +27,10 @@ async function getJobsForDepartment(apiToken, departmentId) {
  */
 async function getJobPosts(apiToken, queryParams) {
   return axios.get('https://harvest.greenhouse.io/v1/job_posts', {
-    params: queryParams,
+    params: {
+      live: true,
+      per_page: 500
+    },
     auth: {
       username: apiToken,
       password: '',
@@ -62,7 +65,7 @@ const changeId = (obj, property = "id") => {
 
 const defaultPluginOptions = {
   jobPosts: {
-    status: "open",
+    live: true,
     per_page: 500
   }
 }
