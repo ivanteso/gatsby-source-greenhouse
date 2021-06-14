@@ -144,8 +144,8 @@ function flattenJobPosts(jobs, jobPosts) {
 }
 
 exports.sourceNodes = (() => {
-  var _ref4 = _asyncToGenerator(function* ({ boundActionCreators }, { apiToken, pluginOptions }) {
-    const createNode = boundActionCreators.createNode;
+  var _ref4 = _asyncToGenerator(function* ({ actions }, { apiToken, pluginOptions }) {
+    const createNode = actions.createNode;
 
     const options = pluginOptions || defaultPluginOptions;
 
