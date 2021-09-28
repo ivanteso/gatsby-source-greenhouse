@@ -36,7 +36,11 @@ let getJobsForDepartment = (() => {
 let getJobPosts = (() => {
   var _ref2 = _asyncToGenerator(function* (apiToken, queryParams) {
     return axios.get('https://harvest.greenhouse.io/v1/job_posts', {
-      params: queryParams,
+      params: {
+        full_content: true,
+        live: true,
+        per_page: 500
+      },
       auth: {
         username: apiToken,
         password: ''
