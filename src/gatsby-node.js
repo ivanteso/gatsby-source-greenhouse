@@ -28,6 +28,7 @@ async function getJobsForDepartment(apiToken, departmentId) {
 async function getJobPosts(apiToken, queryParams) {
   return axios.get('https://harvest.greenhouse.io/v1/job_posts', {
     params: {
+      full_content: true,
       live: true,
       per_page: 500
     },
